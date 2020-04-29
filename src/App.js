@@ -1,26 +1,69 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import CarViewer from './CarViewer';
+import Home from './Home';
+import CarModal from './CarModal';
+import CarPage from './CarPage';
+import {
+  Collapse,
+  Navbar,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  Container
+} from 'reactstrap';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
-function App() {
+function NavbarSwitch() {
+  let location = useLocation();
+  let background = location.state && location.state.background;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+          <Switch location = {background || location}>
+            <Route exact path="/cars">
+              <CarViewer />
+            </Route>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route path="/cars/:id">
+              <CarPage/>
+              </Route>
+          </Switch>
+          {background && <Route path="/cars/:id" children={<CarModal />} />}
     </div>
   );
+
+}
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <Router>
+          <Navbar color="light" light expand="md">
+            <Container>
+            <NavbarBrand href="/">vegan vehicle</NavbarBrand>
+            <Collapse navbar>
+              <Nav className="mr-auto" navbar>
+                <NavItem>
+                  <NavLink href="/cars">Cars</NavLink>
+                </NavItem>
+              </Nav>
+            </Collapse>
+            </Container>
+          </Navbar>
+          <NavbarSwitch/>
+        </Router>
+      </div>
+
+    );
+  }
 }
 
 export default App;
